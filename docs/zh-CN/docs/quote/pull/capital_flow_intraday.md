@@ -1,33 +1,42 @@
 ﻿---
-id: quote_subscription
-title: 獲取已訂閱標的行情
-slug: subscription
-sidebar_position: 3
+id: quote_capital_flow_intraday
+title: 获取标的当日资金流向
+slug: capital-flow-intraday
+sidebar_position: 17
 ---
 
-該接口用於獲取當前連接已訂閱的標的行情。
+该接口用于获取标的当日的资金流向。
 
-<QuotePermission command="subscriptions" />
+<QuotePermission command="capital" />
 
 <CliCommand>
-# 查看當前 WebSocket 實時訂閱狀態
-longbridge subscriptions
+# Tesla 今日资金流向时序
+longbridge capital TSLA.US --flow
+# Apple 今日资金流向时序
+longbridge capital AAPL.US --flow
+# NVDA 今日资金流向时序
+longbridge capital NVDA.US --flow
 </CliCommand>
 
-<SDKLinks module="quote" klass="QuoteContext" method="subscriptions" />
+<SDKLinks module="quote" klass="QuoteContext" method="capital_flow" />
 
 :::info
-
-[業務指令](../../socket/biz_command)：`5`
-
+[业务指令](../../socket/biz_command)：`24`
 :::
 
 ## Request
 
+### Parameters
+
+| Name   | Type   | Required | Description                                          |
+| ------ | ------ | -------- | ---------------------------------------------------- |
+| symbol | string | 是       | 标的代码，使用 `ticker.region` 格式，例如： `700.HK` |
+
 ### Protobuf
 
 ```protobuf
-message SubscriptionRequest {
+message CapitalFlowIntradayRequest {
+  string symbol = 1;
 }
 ```
 
@@ -37,13 +46,13 @@ message SubscriptionRequest {
   <TabItem value="python" label="Python" default>
 
 ```python
-from longbridge.openapi import QuoteContext, Config, SubType, OAuthBuilder
+from longbridge.openapi import QuoteContext, Config, OAuthBuilder
+
 oauth = OAuthBuilder("your-client-id").build(lambda url: print("Visit:", url))
 config = Config.from_oauth(oauth)
 ctx = QuoteContext(config)
 
-ctx.subscribe(["700.HK", "AAPL.US"], [SubType.Quote])
-resp = ctx.subscriptions()
+resp = ctx.capital_flow("700.HK")
 print(resp)
 ```
 
@@ -52,15 +61,14 @@ print(resp)
 
 ```python
 import asyncio
-from longbridge.openapi import AsyncQuoteContext, Config, SubType, OAuthBuilder
+from longbridge.openapi import AsyncQuoteContext, Config, OAuthBuilder
 
 async def main() -> None:
     oauth = await OAuthBuilder("your-client-id").build_async(lambda url: print("Visit:", url))
     config = Config.from_oauth(oauth)
     ctx = AsyncQuoteContext.create(config)
 
-    await ctx.subscribe(["700.HK", "AAPL.US"], [SubType.Quote])
-    resp = await ctx.subscriptions()
+    resp = await ctx.capital_flow("700.HK")
     print(resp)
 
 if __name__ == "__main__":
@@ -77,7 +85,7 @@ async function main() {
   const oauth = await OAuth.build("your-client-id", (_, url) => { console.log("Open this URL to authorize: " + url) })
   const config = Config.fromOAuth(oauth)
   const ctx = QuoteContext.new(config)
-  const resp = await ctx.subscriptions()
+  const resp = await ctx.capitalFlow("700.HK")
   console.log(resp)
 }
 main().catch(console.error)
@@ -95,8 +103,8 @@ class Main {
         try (OAuth oauth = new OAuthBuilder("your-client-id").build(url -> System.out.println("Open to authorize: " + url)).get();
              Config config = Config.fromOAuth(oauth);
              QuoteContext ctx = QuoteContext.create(config)) {
-            Subscription[] resp = ctx.getSubscriptions().get();
-            for (Subscription s : resp) System.out.println(s);
+            CapitalFlowLine[] resp = ctx.getCapitalFlow("700.HK").get();
+            for (CapitalFlowLine line : resp) System.out.println(line);
         }
     }
 }
@@ -114,7 +122,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let oauth = OAuthBuilder::new("your-client-id").build(|url| println!("Open this URL to authorize: {url}")).await?;
     let config = Arc::new(Config::from_oauth(oauth));
     let (ctx, _) = QuoteContext::new(config);
-    let resp = ctx.subscriptions().await?;
+    let resp = ctx.capital_flow("700.HK").await?;
     println!("{:?}", resp);
     Ok(())
 }
@@ -140,9 +148,9 @@ run(const OAuth& oauth)
     Config config = Config::from_oauth(oauth);
     QuoteContext ctx = QuoteContext::create(config);
 
-    ctx.subscriptions([](auto res) {
+    ctx.capital_flow("700.HK", [](auto res) {
         if (!res) { std::cout << "failed: " << *res.status().message() << std::endl; return; }
-        for (const auto& s : *res) std::cout << s.symbol << std::endl;
+        std::cout << "capital_flow lines: " << res->size() << std::endl;
     });
 }
 
@@ -200,13 +208,11 @@ func main() {
 		log.Fatal(err)
 	}
 	defer qctx.Close()
-	subs, err := qctx.Subscriptions(context.Background())
+	lines, err := qctx.CapitalFlow(context.Background(), "700.HK")
 	if err != nil {
 		log.Fatal(err)
 	}
-	for symbol := range subs {
-		fmt.Println(symbol)
-	}
+	fmt.Println("capital_flow lines:", len(lines))
 }
 ```
 
@@ -218,22 +224,23 @@ func main() {
 
 ### Response Properties
 
-| Name       | Type     | Description                                                         |
-| ---------- | -------- | ------------------------------------------------------------------- |
-| sub_list   | object[] | 訂閱的數據                                                          |
-| ∟ symbol   | string   | 標的代碼                                                            |
-| ∟ sub_type | []int32  | 訂閱的數據類型，詳見 [SubType](../objects#subtype---訂閱數據的類型) |
+| Name               | Type     | Description    |
+| ------------------ | -------- | -------------- |
+| symbol             | string   | 标的代码       |
+| capital_flow_lines | object[] | 资金流向数据   |
+| ∟ inflow           | string   | 净流入         |
+| ∟ timestamp        | int64    | 分钟开始时间戳 |
 
 ### Protobuf
 
 ```protobuf
-message SubscriptionResponse {
-  repeated SubTypeList sub_list = 1;
-}
-
-message SubTypeList {
+message CapitalFlowIntradayResponse {
+  message CapitalFlowLine {
+    string inflow = 1;
+    int64 timestamp = 2;
+  }
   string symbol = 1;
-  repeated SubType sub_type = 2;
+  repeated CapitalFlowLine capital_flow_lines = 2;
 }
 ```
 
@@ -241,23 +248,24 @@ message SubTypeList {
 
 ```json
 {
-  "sub_list": [
-    {
-      "symbol": "700.HK",
-      "sub_type": [1, 2, 3]
-    },
-    {
-      "symbol": "AAPL.US",
-      "sub_type": [2]
-    }
+  "symbol": "700.HK",
+  "capital_flow_lines": [
+    { "inflow": "-310255860.000", "timestamp": "1655106960" },
+    { "inflow": "-314011220.000", "timestamp": "1655107020" },
+    { "inflow": "-314011220.000", "timestamp": "1655107080" },
+    { "inflow": "-314011220.000", "timestamp": "1655107140" },
+    { "inflow": "-314011220.000", "timestamp": "1655107200" }
   ]
 }
 ```
 
-## 錯誤碼
+## 错误码
 
-| 協議錯誤碼 | 業務錯誤碼 | 描述           | 排查建議                 |
-| ---------- | ---------- | -------------- | ------------------------ |
-| 3          | 301600     | 無效的請求     | 請求參數有誤或解包失敗   |
-| 3          | 301606     | 限流           | 降低請求頻次             |
-| 7          | 301602     | 服務端內部錯誤 | 請重試或聯繫技術人員處理 |
+| 协议错误码 | 业务错误码 | 描述           | 排查建议                     |
+| ---------- | ---------- | -------------- | ---------------------------- |
+| 3          | 301600     | 无效的请求     | 请求参数有误或解包失败       |
+| 3          | 301606     | 限流           | 降低请求频次                 |
+| 7          | 301602     | 服务端内部错误 | 请重试或联系技术人员处理     |
+| 7          | 301600     | 请求标的不存在 | 检查请求的 `symbol` 是否正确 |
+| 7          | 301603     | 标的无行情     | 标的没有请求的行情数据       |
+| 7          | 301604     | 无权限         | 没有获取标的行情的权限       |
