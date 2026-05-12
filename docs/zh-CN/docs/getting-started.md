@@ -533,6 +533,26 @@ new_config = Config.from_apikey("YOUR_APP_KEY", "YOUR_APP_SECRET", new_token)
 ```
 
   </TabItem>
+  <TabItem value="python-async" label="Python (async)">
+
+```python
+import asyncio
+from datetime import datetime, timedelta
+from longbridge.openapi import Config
+
+async def main() -> None:
+    config = Config.from_apikey("YOUR_APP_KEY", "YOUR_APP_SECRET", "YOUR_ACCESS_TOKEN")
+    # 指定 3 年后过期
+    new_token = config.refresh_access_token(expired_at=datetime.now() + timedelta(days=365 * 3))
+    print("新 Access Token：", new_token)
+    # 用新 token 创建新 Config，或将其持久化为 LONGBRIDGE_ACCESS_TOKEN
+    new_config = Config.from_apikey("YOUR_APP_KEY", "YOUR_APP_SECRET", new_token)
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+  </TabItem>
   <TabItem value="javascript" label="JavaScript">
 
 ```javascript
