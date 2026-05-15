@@ -1,4 +1,4 @@
-# Design System Inspired by Longbridge Singapore
+# Design System Inspired by Longbridge
 
 ## 1. Visual Theme & Atmosphere
 
