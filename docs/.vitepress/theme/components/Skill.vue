@@ -1787,7 +1787,11 @@ function triggerRipple(event: MouseEvent, el: HTMLElement) {
             <p class="t-meta" style="margin-top: 8px; line-height: 1.55; flex: 1">
               {{ content.getstarted.card2.desc }}
             </p>
-            <a class="btn btn-primary" style="margin-top: 14px; align-self: flex-start" href="#">
+            <a
+              class="btn btn-primary"
+              style="margin-top: 14px; align-self: flex-start"
+              href="/skill/longbridge-all.zip"
+              target="_blank">
               <svg
                 width="13"
                 height="13"

@@ -50,7 +50,7 @@ const APP_NAV_DEF = [
 
 const isCnDomain = import.meta.env.VITE_REGION === 'cn'
 
-const CN_HIDDEN_KEYS = new Set(['pricing', 'docs', 'features'])
+const CN_HIDDEN_KEYS = new Set(['pricing', 'docs', 'features', 'mcp'])
 
 const navLinks = computed(() =>
   APP_NAV_DEF.filter((n) => !isCnDomain || !CN_HIDDEN_KEYS.has(n.key)).map((n) => ({
@@ -127,6 +127,7 @@ onMounted(() => {
   document.addEventListener('click', onAvatarClickOutside)
 
   if (!isCnDomain) {
+    const swSrc = 'https://assets.lbkrs.com/h5hub/support-widget/support-widget-1.0.7.iife.js'
     const isProd = !endsWith(location.hostname, '.xyz') && !import.meta.env.DEV
     window.SupportWidgetConfig = {
       isLoggedIn: function () {
@@ -135,10 +136,12 @@ onMounted(() => {
       loginUrl: createLoginRedirectPath({ sw_open: '1' }),
       proxy: isProd ? 'prod' : 'staging',
     }
-    const script = document.createElement('script')
-    script.src = 'https://assets.lbkrs.com/h5hub/support-widget/support-widget-1.0.7.iife.js'
-    script.async = true
-    document.head.appendChild(script)
+    if (!document.querySelector(`script[src="${swSrc}"]`)) {
+      const script = document.createElement('script')
+      script.src = swSrc
+      script.async = true
+      document.head.appendChild(script)
+    }
   }
 })
 onUnmounted(() => {
