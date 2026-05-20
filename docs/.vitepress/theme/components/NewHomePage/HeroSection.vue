@@ -3,6 +3,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useData } from 'vitepress'
 import FlickeringGrid from '../inspira/FlickeringGrid.vue'
 import ColourfulText from '../inspira/ColourfulText.vue'
+import { localePath } from '../../utils/i18n'
 
 const { lang } = useData()
 
@@ -11,7 +12,8 @@ const LOCALE = {
     titlePrefix: 'Longbridge',
     titleAccent: 'Developers',
     powering: 'Powering',
-    subtitle: 'Real-time market data, trading, and financial intelligence — delivered through {skill}, {cli}, {mcp}, {sdk} and {openapi} for developers worldwide.',
+    subtitle:
+      'Real-time market data, trading, and financial intelligence — delivered through {skill}, {cli}, {mcp}, {sdk} and {openapi} for developers worldwide.',
     keywords: { sdk: 'SDK', cli: 'CLI', skill: 'AI Skill', mcp: 'MCP', openapi: 'OpenAPI' },
     cta: { getStarted: 'Get Started', readDocs: 'Docs' },
   },
@@ -78,7 +80,6 @@ onMounted(() => {
 })
 
 onUnmounted(() => clearInterval(productInterval))
-
 </script>
 
 <template>
@@ -126,13 +127,22 @@ onUnmounted(() => clearInterval(productInterval))
 
       <!-- CTA Buttons -->
       <div class="hero-cta">
-        <a href="https://open.longbridge.com/account" class="hero-btn-primary">
+        <a :href="localePath('/dashboard')" class="hero-btn-primary">
           {{ content.cta.getStarted }}
         </a>
         <a href="/docs/" class="hero-cta-secondary">
           {{ content.cta.readDocs }}
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+          <svg
+            width="15"
+            height="15"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M5 12h14" />
+            <path d="m12 5 7 7-7 7" />
           </svg>
         </a>
       </div>
@@ -322,7 +332,9 @@ onUnmounted(() => clearInterval(productInterval))
   border-radius: var(--lb-btn-secondary-radius);
   text-decoration: none !important;
   border: none;
-  transition: background 0.2s, gap 0.2s;
+  transition:
+    background 0.2s,
+    gap 0.2s;
 }
 
 .hero-cta-secondary:hover {

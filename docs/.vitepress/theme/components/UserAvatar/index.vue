@@ -43,7 +43,7 @@ const { avatar } = useAvatar()
 const list = computed<{ title: string; href: string }[]>(() => [
   {
     title: t('HD2WD-CgkkcJJW12yOmDM'),
-    href: localePath('/account'),
+    href: localePath('/dashboard'),
   },
   {
     title: t('JJTHzcLZRxvS2W-2IwWMn'),
@@ -127,7 +127,6 @@ onUnmounted(() => {
   position: relative;
   margin-right: -8px;
 }
-
 
 .VPFlyout:hover {
   color: var(--vp-c-brand-1);

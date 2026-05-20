@@ -11,7 +11,7 @@ sidebar_position: 0
 
 ## Q2: 如何开通模拟账户调试？
 
-请访问 [开发者中心](https://open.longbridge.com/account/) 开启**模拟账户**并获得模拟账户对应的 App Key & Secret 以及 Access Token 等信息。
+请访问 [开发者中心](https://open.longbridge.com/dashboard/) 开启**模拟账户**并获得模拟账户对应的 App Key & Secret 以及 Access Token 等信息。
 
 ## Q3: 模拟调试的行情交易权限与真实账户相同吗？
 

@@ -11,7 +11,7 @@ That said, the paper account differs from the live environment in areas such as 
 
 ## Q2: How to open a paper account for debugging?
 
-Please visit [Development Center](https://open.longbridge.com/account/) to enable the paper account and obtain the corresponding App Key & Secret and Access Token.
+Please visit [Development Center](https://open.longbridge.com/dashboard/) to enable the paper account and obtain the corresponding App Key & Secret and Access Token.
 
 ## Q3: Are the trading permissions for simulation debugging the same as for real accounts?
 

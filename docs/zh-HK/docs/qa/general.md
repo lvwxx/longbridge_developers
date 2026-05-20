@@ -11,7 +11,7 @@ sidebar_position: 0
 
 ## Q2: 如何開通模擬帳戶調試？
 
-請造訪 [開發者中心](https://open.longbridge.com/account/) 開啟**模擬帳號**並取得模擬帳號對應的 App Key & Secret 以及 Access Token 等資訊。
+請造訪 [開發者中心](https://open.longbridge.com/dashboard/) 開啟**模擬帳號**並取得模擬帳號對應的 App Key & Secret 以及 Access Token 等資訊。
 
 ## Q3: 模擬偵錯的行情交易權限與真實帳戶相同嗎？
 

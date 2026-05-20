@@ -417,17 +417,17 @@ Please pay attention to protect your **Access Token** information, anyone who ge
 
 **Other environment variables:**
 
-| Name                               | Description                                                                                                                                                             |
-| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `LONGBRIDGE_LANGUAGE`              | Language identifier, `zh-CN`, `zh-HK` or `en` (Default: `en`)                                                                                                           |
-| `LONGBRIDGE_HTTP_URL`              | HTTP endpoint url (Default: `https://openapi.longbridge.com`)                                                                                                           |
-| `LONGBRIDGE_QUOTE_WS_URL`          | Quote websocket endpoint url (Default: `wss://openapi-quote.longbridge.com/v2`)                                                                                         |
-| `LONGBRIDGE_TRADE_WS_URL`          | Trade websocket endpoint url (Default: `wss://openapi-trade.longbridge.com/v2`)                                                                                         |
-| `LONGBRIDGE_REGION`                | Override API region; SDK auto-selects by network. Set to `cn` or `hk` if incorrect.                                                                                     |
+| Name                               | Description                                                                                                                                                              |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `LONGBRIDGE_LANGUAGE`              | Language identifier, `zh-CN`, `zh-HK` or `en` (Default: `en`)                                                                                                            |
+| `LONGBRIDGE_HTTP_URL`              | HTTP endpoint url (Default: `https://openapi.longbridge.com`)                                                                                                            |
+| `LONGBRIDGE_QUOTE_WS_URL`          | Quote websocket endpoint url (Default: `wss://openapi-quote.longbridge.com/v2`)                                                                                          |
+| `LONGBRIDGE_TRADE_WS_URL`          | Trade websocket endpoint url (Default: `wss://openapi-trade.longbridge.com/v2`)                                                                                          |
+| `LONGBRIDGE_REGION`                | Override API region; SDK auto-selects by network. Set to `cn` or `hk` if incorrect.                                                                                      |
 | `LONGBRIDGE_ENABLE_OVERNIGHT`      | Enable overnight quote, `true` or `false` (Default: `false`). Requires purchasing the "LV1 Real-time Quotes (OpenAPI)" quote card in the Longbridge App. US stocks only. |
-| `LONGBRIDGE_PUSH_CANDLESTICK_MODE` | `realtime` or `confirmed` (Default: `realtime`)                                                                                                                         |
-| `LONGBRIDGE_PRINT_QUOTE_PACKAGES`  | Print quote packages when connected, `true` or `false` (Default: `true`)                                                                                                |
-| `LONGBRIDGE_LOG_PATH`              | Set the path of the log files (Default: no logs)                                                                                                                        |
+| `LONGBRIDGE_PUSH_CANDLESTICK_MODE` | `realtime` or `confirmed` (Default: `realtime`)                                                                                                                          |
+| `LONGBRIDGE_PRINT_QUOTE_PACKAGES`  | Print quote packages when connected, `true` or `false` (Default: `true`)                                                                                                 |
+| `LONGBRIDGE_LOG_PATH`              | Set the path of the log files (Default: no logs)                                                                                                                         |
 
 :::info
 The SDK also accepts the legacy `LONGPORT_*` variable names for backward compatibility.
@@ -917,7 +917,7 @@ To subscribe to market data, please check the [Developer Center](https://open.lo
 - HK Market - BMP basic quotation is unable to subscribe with WebSocket as it has no real-time quote push.
 - US Market - Nasdaq Basic (Only OpenAPI).
 
-Before running, visit the [Developer Center](https://open.longbridge.com/account) and ensure that the account has the correct quote level.
+Before running, visit the [Developer Center](https://open.longbridge.com/dashboard) and ensure that the account has the correct quote level.
 
 :::info
 If you do not have the quotes authority, you can enter "Me - My Quotes - Store" to purchase the authority through the "Longbridge" mobile app.

@@ -83,7 +83,7 @@ const avatarEl = ref<HTMLElement>()
 const avatarCloseTimer = ref<ReturnType<typeof setTimeout> | null>(null)
 
 const avatarMenuItems = computed(() => [
-  { title: 'Dashboard', href: localePath('/account') },
+  { title: 'Dashboard', href: localePath('/dashboard') },
   { title: 'Log out', href: localePath('/log-out') },
 ])
 
@@ -252,7 +252,9 @@ onUnmounted(() => {
         <!-- Logged-in: Dashboard + Avatar -->
         <ClientOnly>
           <template v-if="isLogin">
-            <a class="btn btn-ghost btn-sm hidden md:inline-flex" :href="localePath('/account')">{{ t('nav.dashboard') }}</a>
+            <a class="btn btn-ghost btn-sm hidden md:inline-flex" :href="localePath('/dashboard')">{{
+              t('nav.dashboard')
+            }}</a>
             <div
               ref="avatarEl"
               class="app-nav-avatar"
