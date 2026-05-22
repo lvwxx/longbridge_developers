@@ -1,7 +1,7 @@
 ---
-slug: /quote/pull/short-positions
-title: Short Positions (US & HK)
-sidebar_position: 25
+slug: /quote/pull/short-trades
+title: Daily Short Sale Volume
+sidebar_position: 27
 language_tabs: false
 toc_footers: []
 includes: []
@@ -10,39 +10,28 @@ highlight_theme: ''
 headingLevel: 2
 ---
 
-# Short Positions (US & HK)
-
-Get short interest data for US or HK securities. Market is auto-detected from the symbol suffix: `.HK` → HKEX short position data (daily); others → US FINRA short interest data (bi-monthly).
+Get daily short sale volume data for a security. Supports US stocks (FINRA/NASDAQ) and HK stocks (HKEX). US data is updated bi-weekly; HK data is updated each trading day.
 
 <CliCommand>
-longbridge short-positions TSLA.US
-longbridge short-positions 700.HK
-longbridge short-positions AAPL.US --count 50
+longbridge short-trades TSLA.US
+longbridge short-trades 700.HK --count 30
 </CliCommand>
 
-<SDKLinks module="quote" klass="QuoteContext" method="short_positions" />
+<SDKLinks module="quote" klass="QuoteContext" method="short_trades" />
+
 
 ## Parameters
 
 > **SDK method parameters.**
 
-| Name   | Type    | Required | Description                                                       |
-| ------ | ------- | -------- | ----------------------------------------------------------------- |
-| symbol | string  | YES      | Security symbol, e.g. `TSLA.US` or `700.HK`                      |
-| count  | integer | NO       | Number of records to return (1–100, default: 20)                  |
+| Name   | Type    | Required | Description                                                     |
+| ------ | ------- | -------- | --------------------------------------------------------------- |
+| symbol | string  | YES      | Security symbol; supports US (e.g. `TSLA.US`) and HK (e.g. `700.HK`) |
+| count  | integer | NO       | Number of records to return (1–100, default 20)                 |
 
 ## Request Example
 
 <Tabs groupId="request-example">
-  <TabItem value="cli" label="CLI" default>
-
-<CliCommand>
-longbridge short-positions TSLA.US
-longbridge short-positions 700.HK
-longbridge short-positions AAPL.US --count 50
-</CliCommand>
-
-  </TabItem>
   <TabItem value="python" label="Python">
 
 ```python
@@ -52,12 +41,7 @@ oauth = OAuthBuilder("your-client-id").build(lambda url: print("Visit:", url))
 config = Config.from_oauth(oauth)
 ctx = QuoteContext(config)
 
-# US example
-resp = ctx.short_positions("TSLA.US", 20)
-print(resp)
-
-# HK example
-resp = ctx.short_positions("700.HK", 20)
+resp = ctx.short_trades("TSLA.US")
 print(resp)
 ```
 
@@ -73,12 +57,7 @@ async def main() -> None:
     config = Config.from_oauth(oauth)
     ctx = AsyncQuoteContext.create(config)
 
-    # US example
-    resp = await ctx.short_positions("TSLA.US", 20)
-    print(resp)
-
-    # HK example
-    resp = await ctx.short_positions("700.HK", 20)
+    resp = await ctx.short_trades("TSLA.US")
     print(resp)
 
 if __name__ == "__main__":
@@ -97,7 +76,7 @@ async function main() {
   })
   const config = Config.fromOAuth(oauth)
   const ctx = QuoteContext.new(config)
-  const resp = await ctx.shortPositions('TSLA.US', 20)
+  const resp = await ctx.shortTrades('TSLA.US')
   console.log(resp)
 }
 main().catch(console.error)
@@ -115,7 +94,7 @@ class Main {
         try (OAuth oauth = new OAuthBuilder("your-client-id").build(url -> System.out.println("Open to authorize: " + url)).get();
              Config config = Config.fromOAuth(oauth);
              QuoteContext ctx = QuoteContext.create(config)) {
-            var resp = ctx.getShortPositions("TSLA.US", 20).get();
+            var resp = ctx.getShortTrades("TSLA.US").get();
             System.out.println(resp);
         }
     }
@@ -134,7 +113,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let oauth = OAuthBuilder::new("your-client-id").build(|url| println!("Open: {url}")).await?;
     let config = Arc::new(Config::from_oauth(oauth));
     let (ctx, _) = QuoteContext::new(config);
-    let resp = ctx.short_positions("TSLA.US", 20).await?;
+    let resp = ctx.short_trades("TSLA.US").await?;
     println!("{:?}", resp);
     Ok(())
 }
@@ -157,7 +136,7 @@ int main() {
             if (!res) return;
             Config config = Config::from_oauth(*res);
             QuoteContext ctx = QuoteContext::create(config);
-            ctx.short_positions("TSLA.US", 20, [](auto resp) {
+            ctx.short_trades("TSLA.US", [](auto resp) {
                 if (resp) std::cout << resp->size() << std::endl;
             });
         });
@@ -196,7 +175,7 @@ func main() {
 		log.Fatal(err)
 	}
 	defer qctx.Close()
-	resp, err := qctx.ShortPositions(context.Background(), "TSLA.US", 20)
+	resp, err := qctx.ShortTrades(context.Background(), "TSLA.US")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -209,10 +188,10 @@ func main() {
 
 ## Response
 
+
 ### Response Example
 
-<Tabs groupId="response-example">
-  <TabItem value="us" label="US (.US symbols)" default>
+US stocks (`.US` suffix):
 
 ```json
 {
@@ -220,19 +199,18 @@ func main() {
   "message": "success",
   "data": [
     {
-      "timestamp": "2022-03-15T04:00:00Z",
-      "current_shares_short": "111286790",
-      "avg_daily_share_volume": "95077016",
-      "days_to_cover": "1.17",
-      "rate": "0.0068",
-      "close": ""
+      "timestamp": "2026-05-15T04:00:00Z",
+      "nus_amount": "5748485",
+      "ny_amount": "0",
+      "total_amount": "15778974",
+      "rate": "0.3643",
+      "close": "300.230"
     }
   ]
 }
 ```
 
-  </TabItem>
-  <TabItem value="hk" label="HK (.HK symbols)">
+HK stocks (`.HK` suffix):
 
 ```json
 {
@@ -240,47 +218,48 @@ func main() {
   "message": "success",
   "data": [
     {
-      "timestamp": "2024-06-13T16:00:00Z",
-      "amount": "53677721",
-      "balance": "20386798436",
-      "cost": "379.800",
-      "rate": "0.0057"
+      "timestamp": "2026-05-17T16:00:00Z",
+      "amount": "2926000",
+      "balance": "1318056100.00",
+      "total_amount": "29497076",
+      "rate": "0.0992",
+      "close": "449.2"
     }
   ]
 }
 ```
-
-  </TabItem>
-</Tabs>
 
 ### Response Status
 
 | Status | Description | Schema |
 | ------ | ----------- | ------ |
-| 200    | Success     | See schemas below |
+| 200    | Success     | [ShortTradesResponse](#ShortTradesResponse) |
 | 400    | Bad request | None   |
 
 ## Schemas
 
 ### US Response (`.US` symbols)
 
-| Name                     | Type     | Required | Description                                    |
-| ------------------------ | -------- | -------- | ---------------------------------------------- |
-| data                     | object[] | false    | Short position records                         |
-| ∟ timestamp              | string   | false    | Settlement date (RFC 3339, e.g. `2022-03-15T04:00:00Z`) |
-| ∟ current_shares_short   | string   | false    | Number of shares sold short                    |
-| ∟ avg_daily_share_volume | string   | false    | Average daily share volume                     |
-| ∟ days_to_cover          | string   | false    | Days to cover (short shares ÷ avg daily vol)   |
-| ∟ rate                   | string   | false    | Short ratio                                    |
-| ∟ close                  | string   | false    | Closing price for the day                      |
+<a id="ShortTradesResponse"></a>
+
+| Name | Type | Required | Description |
+| ---- | ---- | -------- | ----------- |
+| data | object[] | false | Daily short trade volume records |
+| ∟ timestamp | string | false | Trading date (RFC 3339, e.g. `2026-05-15T04:00:00Z`) |
+| ∟ nus_amount | string | false | NASDAQ short sale volume (shares) |
+| ∟ ny_amount | string | false | NYSE short sale volume (shares) |
+| ∟ total_amount | string | false | Total trading volume for the day |
+| ∟ rate | string | false | Short ratio (short volume ÷ total volume) |
+| ∟ close | string | false | Closing price |
 
 ### HK Response (`.HK` symbols)
 
-| Name        | Type     | Required | Description                               |
-| ----------- | -------- | -------- | ----------------------------------------- |
-| data        | object[] | false    | Short position records                    |
-| ∟ timestamp | string   | false    | Trade date (RFC 3339, e.g. `2022-03-15T04:00:00Z`) |
-| ∟ amount    | string   | false    | Short selling amount (HKD)                |
-| ∟ balance   | string   | false    | Short position balance                    |
-| ∟ cost      | string   | false    | Closing price for the day                 |
-| ∟ rate      | string   | false    | Short ratio                               |
+| Name | Type | Required | Description |
+| ---- | ---- | -------- | ----------- |
+| data | object[] | false | Daily short trade volume records |
+| ∟ timestamp | string | false | Trading date (RFC 3339, e.g. `2026-05-15T04:00:00Z`) |
+| ∟ amount | string | false | Short sale turnover amount (HKD) |
+| ∟ balance | string | false | Short position balance |
+| ∟ total_amount | string | false | Total trading turnover for the day |
+| ∟ rate | string | false | Short ratio (short turnover ÷ total turnover) |
+| ∟ close | string | false | Closing price |

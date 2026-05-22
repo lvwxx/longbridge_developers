@@ -1,7 +1,7 @@
 ---
-slug: /quote/pull/short-positions
-title: 沽空數據（美股 / 港股）
-sidebar_position: 25
+slug: /quote/pull/short-trades
+title: 每日沽空成交量
+sidebar_position: 27
 language_tabs: false
 toc_footers: []
 includes: []
@@ -10,38 +10,28 @@ highlight_theme: ''
 headingLevel: 2
 ---
 
-獲取美股或港股沽空持倉數據。市場根據代碼後綴自動識別：`.HK` → 港交所沽空數據（每日更新）；其他 → 美股 FINRA 沽空數據（雙月更新）。
+獲取個股每日沽空成交量數據，支持美股（FINRA）和港股（HKEX）。美股數據每兩週更新一次，港股數據每個交易日更新。
 
 <CliCommand>
-longbridge short-positions TSLA.US
-longbridge short-positions 700.HK
-longbridge short-positions AAPL.US --count 50
+longbridge short-trades TSLA.US
+longbridge short-trades 700.HK --count 30
 </CliCommand>
 
-<SDKLinks module="quote" klass="QuoteContext" method="short_positions" />
+<SDKLinks module="quote" klass="QuoteContext" method="short_trades" />
 
 
 ## Parameters
 
 > **SDK 方法參數。**
 
-| Name   | Type    | Required | Description                                                      |
-| ------ | ------- | -------- | ---------------------------------------------------------------- |
-| symbol | string  | YES      | 證券代碼，例如 `TSLA.US` 或 `700.HK`                            |
-| count  | integer | NO       | 返回記錄數（1–100，默認 20）                                     |
+| Name   | Type    | Required | Description                                               |
+| ------ | ------- | -------- | --------------------------------------------------------- |
+| symbol | string  | YES      | 證券代碼，支持美股（如 `TSLA.US`）和港股（如 `700.HK`）  |
+| count  | integer | NO       | 返回記錄數（1–100，默認 20）                              |
 
 ## Request Example
 
 <Tabs groupId="request-example">
-  <TabItem value="cli" label="CLI" default>
-
-<CliCommand>
-longbridge short-positions TSLA.US
-longbridge short-positions 700.HK
-longbridge short-positions AAPL.US --count 50
-</CliCommand>
-
-  </TabItem>
   <TabItem value="python" label="Python">
 
 ```python
@@ -51,12 +41,7 @@ oauth = OAuthBuilder("your-client-id").build(lambda url: print("Visit:", url))
 config = Config.from_oauth(oauth)
 ctx = QuoteContext(config)
 
-# 美股示例
-resp = ctx.short_positions("TSLA.US", 20)
-print(resp)
-
-# 港股示例
-resp = ctx.short_positions("700.HK", 20)
+resp = ctx.short_trades("TSLA.US")
 print(resp)
 ```
 
@@ -72,12 +57,7 @@ async def main() -> None:
     config = Config.from_oauth(oauth)
     ctx = AsyncQuoteContext.create(config)
 
-    # 美股示例
-    resp = await ctx.short_positions("TSLA.US", 20)
-    print(resp)
-
-    # 港股示例
-    resp = await ctx.short_positions("700.HK", 20)
+    resp = await ctx.short_trades("TSLA.US")
     print(resp)
 
 if __name__ == "__main__":
@@ -96,7 +76,7 @@ async function main() {
   })
   const config = Config.fromOAuth(oauth)
   const ctx = QuoteContext.new(config)
-  const resp = await ctx.shortPositions('TSLA.US', 20)
+  const resp = await ctx.shortTrades('TSLA.US')
   console.log(resp)
 }
 main().catch(console.error)
@@ -114,7 +94,7 @@ class Main {
         try (OAuth oauth = new OAuthBuilder("your-client-id").build(url -> System.out.println("Open to authorize: " + url)).get();
              Config config = Config.fromOAuth(oauth);
              QuoteContext ctx = QuoteContext.create(config)) {
-            var resp = ctx.getShortPositions("TSLA.US", 20).get();
+            var resp = ctx.getShortTrades("TSLA.US").get();
             System.out.println(resp);
         }
     }
@@ -133,7 +113,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let oauth = OAuthBuilder::new("your-client-id").build(|url| println!("Open: {url}")).await?;
     let config = Arc::new(Config::from_oauth(oauth));
     let (ctx, _) = QuoteContext::new(config);
-    let resp = ctx.short_positions("TSLA.US", 20).await?;
+    let resp = ctx.short_trades("TSLA.US").await?;
     println!("{:?}", resp);
     Ok(())
 }
@@ -156,7 +136,7 @@ int main() {
             if (!res) return;
             Config config = Config::from_oauth(*res);
             QuoteContext ctx = QuoteContext::create(config);
-            ctx.short_positions("TSLA.US", 20, [](auto resp) {
+            ctx.short_trades("TSLA.US", [](auto resp) {
                 if (resp) std::cout << resp->size() << std::endl;
             });
         });
@@ -195,7 +175,7 @@ func main() {
 		log.Fatal(err)
 	}
 	defer qctx.Close()
-	resp, err := qctx.ShortPositions(context.Background(), "TSLA.US", 20)
+	resp, err := qctx.ShortTrades(context.Background(), "TSLA.US")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -208,10 +188,10 @@ func main() {
 
 ## Response
 
+
 ### Response Example
 
-<Tabs groupId="response-example">
-  <TabItem value="us" label="美股（.US 代碼）" default>
+美股（`.US` 後綴）：
 
 ```json
 {
@@ -219,19 +199,18 @@ func main() {
   "message": "success",
   "data": [
     {
-      "timestamp": "2022-03-15T04:00:00Z",
-      "current_shares_short": "111286790",
-      "avg_daily_share_volume": "95077016",
-      "days_to_cover": "1.17",
-      "rate": "0.0068",
-      "close": ""
+      "timestamp": "2026-05-15T04:00:00Z",
+      "nus_amount": "5748485",
+      "ny_amount": "0",
+      "total_amount": "15778974",
+      "rate": "0.3643",
+      "close": "300.230"
     }
   ]
 }
 ```
 
-  </TabItem>
-  <TabItem value="hk" label="港股（.HK 代碼）">
+港股（`.HK` 後綴）：
 
 ```json
 {
@@ -239,47 +218,48 @@ func main() {
   "message": "success",
   "data": [
     {
-      "timestamp": "2024-06-13T16:00:00Z",
-      "amount": "53677721",
-      "balance": "20386798436",
-      "cost": "379.800",
-      "rate": "0.0057"
+      "timestamp": "2026-05-17T16:00:00Z",
+      "amount": "2926000",
+      "balance": "1318056100.00",
+      "total_amount": "29497076",
+      "rate": "0.0992",
+      "close": "449.2"
     }
   ]
 }
 ```
-
-  </TabItem>
-</Tabs>
 
 ### Response Status
 
 | Status | Description | Schema |
 | ------ | ----------- | ------ |
-| 200    | 成功        | 見下方 Schema |
+| 200    | 成功        | [ShortTradesResponse](#ShortTradesResponse) |
 | 400    | 請求錯誤    | None   |
 
 ## Schemas
 
-### 美股響應（`.US` 代碼）
+### US Response（`.US` 代碼）
 
-| Name                     | Type     | Required | Description                               |
-| ------------------------ | -------- | -------- | ----------------------------------------- |
-| data                     | object[] | false    | 沽空持倉記錄                              |
-| ∟ timestamp              | string   | false    | 結算日期（RFC 3339 格式，例如 `2022-03-15T04:00:00Z`） |
-| ∟ current_shares_short   | string   | false    | 沽空持倉股數                              |
-| ∟ avg_daily_share_volume | string   | false    | 日均成交量                                |
-| ∟ days_to_cover          | string   | false    | 沽空回補天數                              |
-| ∟ rate                   | string   | false    | 沽空比率                                  |
-| ∟ close                  | string   | false    | 當日收盤價                                |
+<a id="ShortTradesResponse"></a>
 
-### 港股響應（`.HK` 代碼）
+| Name | Type | Required | Description |
+| ---- | ---- | -------- | ----------- |
+| data | object[] | 否 | 每日沽空成交量列表 |
+| ∟ timestamp | string | 否 | 交易日期（RFC 3339 格式，例如 `2026-05-15T04:00:00Z`） |
+| ∟ nus_amount | string | 否 | 納斯達克沽空成交量（股） |
+| ∟ ny_amount | string | 否 | 紐交所沽空成交量（股） |
+| ∟ total_amount | string | 否 | 當日總成交量 |
+| ∟ rate | string | 否 | 沽空比率（沽空量 ÷ 總成交量） |
+| ∟ close | string | 否 | 當日收盤價 |
 
-| Name        | Type     | Required | Description                    |
-| ----------- | -------- | -------- | ------------------------------ |
-| data        | object[] | false    | 沽空持倉記錄                   |
-| ∟ timestamp | string   | false    | 交易日期（RFC 3339 格式，例如 `2022-03-15T04:00:00Z`） |
-| ∟ amount    | string   | false    | 沽空金額（港元）               |
-| ∟ balance   | string   | false    | 沽空持倉餘額                   |
-| ∟ cost      | string   | false    | 當日收盤價                     |
-| ∟ rate      | string   | false    | 沽空比率                       |
+### HK Response（`.HK` 代碼）
+
+| Name | Type | Required | Description |
+| ---- | ---- | -------- | ----------- |
+| data | object[] | 否 | 每日沽空成交量列表 |
+| ∟ timestamp | string | 否 | 交易日期（RFC 3339 格式，例如 `2026-05-15T04:00:00Z`） |
+| ∟ amount | string | 否 | 當日沽空成交金額（港元） |
+| ∟ balance | string | 否 | 沽空持倉餘額 |
+| ∟ total_amount | string | 否 | 當日總成交金額 |
+| ∟ rate | string | 否 | 沽空比率（沽空金額 ÷ 總成交金額） |
+| ∟ close | string | 否 | 當日收盤價 |
