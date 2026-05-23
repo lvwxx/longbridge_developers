@@ -12,6 +12,10 @@ headingLevel: 2
 
 Get all indicator definitions supported by the stock screener, including keys, names, units, and available ranges. Use these to build custom filter conditions.
 
+Endpoint: `GET /v1/quote/ai/screener/indicators`
+
+> **SDK response:** The `data` field contains a grouped structure `{"groups": [{...}]}`. The CLI `screener indicators --format json` flattens this to a flat array for convenience.
+
 <CliCommand>
 longbridge screener indicators
 </CliCommand>
@@ -194,49 +198,17 @@ func main() {
   "data": {
     "groups": [
       {
-        "group_name": "Market",
-        "group_type": "range",
+        "group_name": "公司规模与财务",
         "indicators": [
-          {
-            "id": -1,
-            "key": "filter_market",
-            "name": "Market",
-            "unit": "",
-            "category": 0,
-            "description": "",
-            "default_selected": false,
-            "default_range": [],
-            "value_ranges": [],
-            "places": 0,
-            "sub_indicators": [],
-            "tech_indicators": []
-          }
-        ]
-      },
-      {
-        "group_name": "Quote Indicators",
-        "group_type": "Quotes",
-        "indicators": [
-          {
-            "id": 1,
-            "key": "filter_marketcap",
-            "name": "Market Cap",
-            "unit": "bn",
-            "category": 1,
-            "description": "",
-            "default_selected": true,
-            "default_range": [{"min": "10", "max": "1000"}],
-            "value_ranges": [{"min": "", "max": "10"}, {"min": "10", "max": "100"}],
-            "places": 2,
-            "sub_indicators": [],
-            "tech_indicators": []
-          }
+          { "id": "1", "key": "marketcap", "name": "市值", "unit": "亿", "min": null, "max": null }
         ]
       }
     ]
   }
 }
 ```
+
+> The `filter_` prefix is stripped from all `key` values. The `id` field is a string.
 
 ### Response Status
 
@@ -251,30 +223,16 @@ func main() {
 
 <a id="ScreenerIndicatorsResponse"></a>
 
+The SDK response `data` is a grouped structure. The CLI `--format json` output flattens it to a flat array. The `filter_` prefix is stripped from all `key` values.
+
 | Name | Type | Required | Description |
 | ---- | ---- | -------- | ----------- |
 | groups | object[] | false | Indicator groups |
 | ∟ group_name | string | false | Group name |
-| ∟ group_type | string | false | Group type (e.g. `range`, `Quotes`, `DividendIndex`) |
-| ∟ indicators | object[] | false | List of indicators in this group |
-| ∟ ∟ id | integer | false | Indicator ID |
-| ∟ ∟ key | string | false | Indicator key for building filter conditions |
+| ∟ indicators | object[] | false | Indicators in this group |
+| ∟ ∟ id | string | false | Indicator ID (string) |
+| ∟ ∟ key | string | false | Indicator key for building filter conditions (no `filter_` prefix) |
 | ∟ ∟ name | string | false | Indicator display name |
-| ∟ ∟ unit | string | false | Unit (e.g. `%`, `bn`) |
-| ∟ ∟ category | integer | false | Indicator category code |
-| ∟ ∟ description | string | false | Indicator description |
-| ∟ ∟ default_selected | boolean | false | Whether this indicator is selected by default |
-| ∟ ∟ default_range | [RangeItem](#RangeItem)[] | false | Default filter range |
-| ∟ ∟ value_ranges | [RangeItem](#RangeItem)[] | false | Available value ranges for this indicator |
-| ∟ ∟ places | integer | false | Decimal places for display |
-| ∟ ∟ sub_indicators | object[] | false | Sub-indicator definitions |
-| ∟ ∟ tech_indicators | object[] | false | Technical indicator definitions |
-
-### RangeItem
-
-<a id="RangeItem"></a>
-
-| Name | Type | Required | Description |
-| ---- | ---- | -------- | ----------- |
-| min | string | false | Lower bound (empty string means no lower bound) |
-| max | string | false | Upper bound (empty string means no upper bound) |
+| ∟ ∟ unit | string | false | Unit (e.g. `%`, `亿`) |
+| ∟ ∟ min | string | false | Global lower bound; null means no lower bound |
+| ∟ ∟ max | string | false | Global upper bound; null means no upper bound |

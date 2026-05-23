@@ -12,6 +12,10 @@ headingLevel: 2
 
 按策略 ID 或自定义指标条件筛选股票，支持分页。
 
+接口：`POST /v1/quote/ai/screener/search`
+
+> **JSON 输出格式说明：** 响应使用扁平的 `items[]` 数组（非 `stocks[]`），所有数值字段为 JSON 数字类型（非字符串），指标键名不含 `filter_` 前缀。
+
 <CliCommand>
 longbridge screener search --strategy-id 42
 longbridge screener search --market HK --filter filter_marketcap:100:1000
@@ -27,8 +31,10 @@ longbridge screener search --market HK --filter filter_marketcap:100:1000
 | Name | Type | Required | Description |
 | ---- | ---- | -------- | ----------- |
 | market | string | 是 | 市场：`US`、`HK`、`CN`、`SG` |
-| strategy_id | integer | 否 | 策略 ID；与自定义 filter 二选一，或同时使用 |
-| page | integer | 否 | 页码，从 1 开始，默认 1 |
+| strategy_id | integer | 否 | 策略 ID；与自定义条件二选一，或同时使用 |
+| conditions | ScreenerCondition[] | 否 | 自定义筛选条件（模式 B，不传 strategy_id 时使用） |
+| show | string[] | 否 | 额外需要返回的指标键名，在默认 7 列之外追加 |
+| page | integer | 否 | 页码，从 0 开始，默认 0 |
 | size | integer | 否 | 每页条数，默认 20 |
 
 ## Request Example
@@ -97,7 +103,7 @@ class Main {
         try (OAuth oauth = new OAuthBuilder("your-client-id").build(url -> System.out.println("Open to authorize: " + url)).get();
              Config config = Config.fromOAuth(oauth);
              ScreenerContext ctx = ScreenerContext.create(config)) {
-            var resp = ctx.screenerSearch("US", 42L, 1, 20).get();
+            var resp = ctx.screenerSearch("US", 19L, null, List.of(), 0, 20).get();
             System.out.println(resp);
         }
     }
@@ -116,7 +122,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let oauth = OAuthBuilder::new("your-client-id").build(|url| println!("Open: {url}")).await?;
     let config = Arc::new(Config::from_oauth(oauth));
     let ctx = ScreenerContext::new(config);
-    let resp = ctx.screener_search("US", Some(42), 1, 20).await?;
+    // 模式 A：运行策略
+    let resp = ctx.screener_search("", Some(19), vec![], vec![], 0, 20).await?;
+    println!("{:?}", resp);
+    // 模式 B：自定义条件
+    use longbridge::screener::ScreenerCondition;
+    let conditions = vec![ScreenerCondition { key: "pettm".into(), min: "10".into(), max: "50".into(), tech_values: serde_json::json!({}) }];
+    let resp = ctx.screener_search("HK", None, conditions, vec![], 0, 20).await?;
     println!("{:?}", resp);
     Ok(())
 }
@@ -178,11 +190,24 @@ func main() {
 		log.Fatal(err)
 	}
 	defer c.Close()
-	resp, err := c.ScreenerSearch(context.Background(), "US", 42, 1, 20)
+	// 模式 A：运行策略
+	stratID := int64(19)
+	resp, err := c.ScreenerSearch(context.Background(), "", &stratID, nil, nil, 0, 20)
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Printf("%+v\n", resp)
+
+	// 模式 B：自定义条件
+	conditions := []screener.ScreenerCondition{
+		{Key: "pettm", Min: "10", Max: "50"},
+		{Key: "roe", Min: "5"},
+	}
+	resp2, err := c.ScreenerSearch(context.Background(), "HK", nil, conditions, []string{"roe"}, 0, 20)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("%+v\n", resp2)
 }
 ```
 
@@ -199,31 +224,27 @@ func main() {
   "code": 0,
   "message": "success",
   "data": {
-    "total": 87,
-    "page": 1,
-    "size": 20,
-    "stocks": [
+    "total": 88,
+    "page": 0,
+    "market": "US",
+    "items": [
       {
         "symbol": "AAPL.US",
         "name": "苹果公司",
-        "last_done": "213.49",
-        "chg": "+0.62%",
-        "market_cap": "3241500000000",
-        "pe": "32.15",
-        "pb": "50.21",
-        "ps": "8.04",
-        "roe": "147.25"
+        "prevchg": 0.62,
+        "marketcap": 3241500000000,
+        "pettm": 32.15,
+        "pbmrq": 50.21,
+        "salesgrowthyoy": 8.04
       },
       {
         "symbol": "MSFT.US",
         "name": "微软",
-        "last_done": "415.32",
-        "chg": "+1.05%",
-        "market_cap": "3085000000000",
-        "pe": "35.42",
-        "pb": "12.87",
-        "ps": "12.61",
-        "roe": "36.52"
+        "prevchg": 1.05,
+        "marketcap": 3085000000000,
+        "pettm": 35.42,
+        "pbmrq": 12.87,
+        "salesgrowthyoy": 12.61
       }
     ]
   }
@@ -246,15 +267,16 @@ func main() {
 | Name | Type | Required | Description |
 | ---- | ---- | -------- | ----------- |
 | total | integer | false | 满足条件的股票总数 |
-| page | integer | false | 当前页码 |
-| size | integer | false | 当前页条数 |
-| stocks | object[] | false | 筛选结果股票列表 |
+| page | integer | false | 当前页码（从零开始） |
+| market | string | false | 结果集的市场 |
+| items | object[] | false | 筛选结果股票列表 |
 | ∟ symbol | string | false | 证券代码 |
 | ∟ name | string | false | 证券名称 |
-| ∟ last_done | string | false | 最新成交价 |
-| ∟ chg | string | false | 涨跌幅 |
-| ∟ market_cap | string | false | 市值 |
-| ∟ pe | string | false | 市盈率 |
-| ∟ pb | string | false | 市净率 |
-| ∟ ps | string | false | 市销率 |
-| ∟ roe | string | false | 净资产收益率（%） |
+| ∟ prevchg | number | false | 昨日涨跌幅（如 `1.24` 表示 1.24%） |
+| ∟ marketcap | number | false | 市值（数字类型） |
+| ∟ pettm | number | false | 市盈率 TTM（数字类型） |
+| ∟ pbmrq | number | false | 市净率 MRQ（数字类型） |
+| ∟ salesgrowthyoy | number | false | 营收同比增速（%） |
+| ∟ industry | string | false | 行业分类 |
+
+> 所有数值指标字段均为 JSON 数字类型。具体返回字段取决于所用策略或筛选条件。指标键名不含 `filter_` 前缀。

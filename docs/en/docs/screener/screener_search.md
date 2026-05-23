@@ -12,6 +12,10 @@ headingLevel: 2
 
 Filter stocks by strategy ID or custom indicator conditions, with pagination support.
 
+Endpoint: `POST /v1/quote/ai/screener/search`
+
+> **Note on JSON output format:** The response uses a flat `items[]` array (not `stocks[]`), all numeric fields are JSON numbers (not strings), and indicator keys do not carry the `filter_` prefix.
+
 <CliCommand>
 longbridge screener search --strategy-id 42
 longbridge screener search --market HK --filter filter_marketcap:100:1000
@@ -27,8 +31,10 @@ longbridge screener search --market HK --filter filter_marketcap:100:1000
 | Name | Type | Required | Description |
 | ---- | ---- | -------- | ----------- |
 | market | string | YES | Market: `US`, `HK`, `CN`, `SG` |
-| strategy_id | integer | NO | Strategy ID; use alone or combined with custom filters |
-| page | integer | NO | Page number starting from 1, default 1 |
+| strategy_id | integer | NO | Strategy ID; use alone or combined with custom conditions |
+| conditions | ScreenerCondition[] | NO | Custom filter conditions (Mode B, when strategy_id is omitted) |
+| show | string[] | NO | Extra indicator keys to include in the response beyond the 7 default columns |
+| page | integer | NO | 0-based page number, default 0 |
 | size | integer | NO | Page size, default 20 |
 
 ## Request Example
@@ -97,7 +103,7 @@ class Main {
         try (OAuth oauth = new OAuthBuilder("your-client-id").build(url -> System.out.println("Open to authorize: " + url)).get();
              Config config = Config.fromOAuth(oauth);
              ScreenerContext ctx = ScreenerContext.create(config)) {
-            var resp = ctx.screenerSearch("US", 42L, 1, 20).get();
+            var resp = ctx.screenerSearch("US", 19L, null, List.of(), 0, 20).get();
             System.out.println(resp);
         }
     }
@@ -116,7 +122,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let oauth = OAuthBuilder::new("your-client-id").build(|url| println!("Open: {url}")).await?;
     let config = Arc::new(Config::from_oauth(oauth));
     let ctx = ScreenerContext::new(config);
-    let resp = ctx.screener_search("US", Some(42), 1, 20).await?;
+    // Mode A: run a strategy
+    let resp = ctx.screener_search("", Some(19), vec![], vec![], 0, 20).await?;
+    println!("{:?}", resp);
+    // Mode B: custom conditions
+    use longbridge::screener::ScreenerCondition;
+    let conditions = vec![ScreenerCondition { key: "pettm".into(), min: "10".into(), max: "50".into(), tech_values: serde_json::json!({}) }];
+    let resp = ctx.screener_search("HK", None, conditions, vec![], 0, 20).await?;
     println!("{:?}", resp);
     Ok(())
 }
@@ -178,11 +190,24 @@ func main() {
 		log.Fatal(err)
 	}
 	defer c.Close()
-	resp, err := c.ScreenerSearch(context.Background(), "US", 42, 1, 20)
+	// Mode A: run a strategy
+	stratID := int64(19)
+	resp, err := c.ScreenerSearch(context.Background(), "", &stratID, nil, nil, 0, 20)
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Printf("%+v\n", resp)
+
+	// Mode B: custom conditions
+	conditions := []screener.ScreenerCondition{
+		{Key: "pettm", Min: "10", Max: "50"},
+		{Key: "roe", Min: "5"},
+	}
+	resp2, err := c.ScreenerSearch(context.Background(), "HK", nil, conditions, []string{"roe"}, 0, 20)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("%+v\n", resp2)
 }
 ```
 
@@ -199,31 +224,27 @@ func main() {
   "code": 0,
   "message": "success",
   "data": {
-    "total": 87,
-    "page": 1,
-    "size": 20,
-    "stocks": [
+    "total": 88,
+    "page": 0,
+    "market": "US",
+    "items": [
       {
         "symbol": "AAPL.US",
         "name": "Apple Inc.",
-        "last_done": "213.49",
-        "chg": "+0.62%",
-        "market_cap": "3241500000000",
-        "pe": "32.15",
-        "pb": "50.21",
-        "ps": "8.04",
-        "roe": "147.25"
+        "prevchg": 0.62,
+        "marketcap": 3241500000000,
+        "pettm": 32.15,
+        "pbmrq": 50.21,
+        "salesgrowthyoy": 8.04
       },
       {
         "symbol": "MSFT.US",
         "name": "Microsoft",
-        "last_done": "415.32",
-        "chg": "+1.05%",
-        "market_cap": "3085000000000",
-        "pe": "35.42",
-        "pb": "12.87",
-        "ps": "12.61",
-        "roe": "36.52"
+        "prevchg": 1.05,
+        "marketcap": 3085000000000,
+        "pettm": 35.42,
+        "pbmrq": 12.87,
+        "salesgrowthyoy": 12.61
       }
     ]
   }
@@ -246,15 +267,16 @@ func main() {
 | Name | Type | Required | Description |
 | ---- | ---- | -------- | ----------- |
 | total | integer | false | Total number of matching stocks |
-| page | integer | false | Current page number |
-| size | integer | false | Number of results on the current page |
-| stocks | object[] | false | Filtered stock list |
+| page | integer | false | Current page number (zero-based) |
+| market | string | false | Market of the result set |
+| items | object[] | false | Filtered stock list |
 | ∟ symbol | string | false | Security symbol |
 | ∟ name | string | false | Security name |
-| ∟ last_done | string | false | Latest trade price |
-| ∟ chg | string | false | Price change |
-| ∟ market_cap | string | false | Market capitalisation |
-| ∟ pe | string | false | P/E ratio |
-| ∟ pb | string | false | P/B ratio |
-| ∟ ps | string | false | P/S ratio |
-| ∟ roe | string | false | Return on equity (%) |
+| ∟ prevchg | number | false | Previous day price change ratio (e.g. `1.24` = 1.24%) |
+| ∟ marketcap | number | false | Market capitalisation (numeric) |
+| ∟ pettm | number | false | P/E ratio (TTM, numeric) |
+| ∟ pbmrq | number | false | P/B ratio (MRQ, numeric) |
+| ∟ salesgrowthyoy | number | false | Revenue growth YoY (%) |
+| ∟ industry | string | false | Industry classification |
+
+> All numeric indicator fields are JSON numbers. Additional indicator fields depend on the strategy or filter used. Indicator keys do not carry the `filter_` prefix.

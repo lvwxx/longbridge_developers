@@ -12,8 +12,11 @@ headingLevel: 2
 
 獲取當前登錄用戶創建的自定義選股策略列表。
 
+接口：`GET /v1/quote/ai/screener/strategies/mine`
+
 <CliCommand>
 longbridge screener strategies --mine
+longbridge screener strategies --mine --market HK
 </CliCommand>
 
 <SDKLinks module="screener" klass="ScreenerContext" method="screener_user_strategies" />
@@ -23,7 +26,11 @@ longbridge screener strategies --mine
 
 > **SDK 方法參數。**
 
-此方法無參數（需登錄）。
+| Name | Type | Required | Description |
+| ---- | ---- | -------- | ----------- |
+| market | string | 否 | 市場篩選：`US`、`HK`、`CN`、`SG`，默認 `US` |
+
+需要登錄。
 
 ## Request Example
 
@@ -171,7 +178,7 @@ func main() {
 		log.Fatal(err)
 	}
 	defer c.Close()
-	resp, err := c.ScreenerUserStrategies(context.Background())
+	resp, err := c.ScreenerUserStrategies(context.Background(), "US")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -192,21 +199,8 @@ func main() {
   "code": 0,
   "message": "success",
   "data": {
-    "screeners": [
-      {
-        "id": 42,
-        "name": "我的成長股策略",
-        "average_day_chg": "+1.24%",
-        "stocks": ["NVDA.US", "AMD.US"],
-        "groups": [
-          {
-            "group_name": "成長性",
-            "indicators": [
-              { "id": 30, "key": "filter_revenue_growth", "name": "營收增速", "unit": "%", "min": 20, "max": null }
-            ]
-          }
-        ]
-      }
+    "strategys": [
+      { "id": 42, "name": "我的成長股策略", "type": "user", "market": "US" }
     ]
   }
 }

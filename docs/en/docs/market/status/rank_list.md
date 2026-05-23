@@ -10,11 +10,11 @@ highlight_theme: ''
 headingLevel: 2
 ---
 
-Get the stock ranking for a given leaderboard tag key. The key comes from `rank_categories` `second_tags[].key`, e.g. `ib_hot_all-us` (US total hotness).
+Get the stock ranking for a given leaderboard tag key. The key comes from `rank_categories` `second_tags[].key`, e.g. `hot_all-us` (US total hotness).
 
 <CliCommand>
-longbridge rank --key ib_hot_all-us
-longbridge rank --key ib_hot_all-hk
+longbridge rank --key hot_all-us
+longbridge rank --key hot_all-hk
 </CliCommand>
 
 <SDKLinks module="market" klass="MarketContext" method="rank_list" />
@@ -41,7 +41,7 @@ oauth = OAuthBuilder("your-client-id").build(lambda url: print("Visit:", url))
 config = Config.from_oauth(oauth)
 ctx = MarketContext(config)
 
-resp = ctx.rank_list("ib_hot_all-us")
+resp = ctx.rank_list("hot_all-us")
 print(resp)
 ```
 
@@ -57,7 +57,7 @@ async def main() -> None:
     config = Config.from_oauth(oauth)
     ctx = AsyncMarketContext.create(config)
 
-    resp = await ctx.rank_list("ib_hot_all-us", need_article=False)
+    resp = await ctx.rank_list("hot_all-us", need_article=False)
     print(resp)
 
 if __name__ == "__main__":
@@ -76,7 +76,7 @@ async function main() {
   })
   const config = Config.fromOAuth(oauth)
   const ctx = MarketContext.new(config)
-  const resp = await ctx.rankList('ib_hot_all-us', false)
+  const resp = await ctx.rankList('hot_all-us', false)
   console.log(resp)
 }
 main().catch(console.error)
@@ -94,7 +94,7 @@ class Main {
         try (OAuth oauth = new OAuthBuilder("your-client-id").build(url -> System.out.println("Open to authorize: " + url)).get();
              Config config = Config.fromOAuth(oauth);
              MarketContext ctx = MarketContext.create(config)) {
-            var resp = ctx.getRankList("ib_hot_all-us", false).get();
+            var resp = ctx.getRankList("hot_all-us", false).get();
             System.out.println(resp);
         }
     }
@@ -113,7 +113,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let oauth = OAuthBuilder::new("your-client-id").build(|url| println!("Open: {url}")).await?;
     let config = Arc::new(Config::from_oauth(oauth));
     let ctx = MarketContext::new(config);
-    let resp = ctx.rank_list("ib_hot_all-us", false).await?;
+    let resp = ctx.rank_list("hot_all-us", false).await?;
     println!("{:?}", resp);
     Ok(())
 }
@@ -136,7 +136,7 @@ int main() {
             if (!res) return;
             Config config = Config::from_oauth(*res);
             MarketContext ctx = MarketContext::create(config);
-            ctx.rank_list("ib_hot_all-us", false, [](auto resp) {
+            ctx.rank_list("hot_all-us", false, [](auto resp) {
                 if (resp) std::cout << "OK" << std::endl;
             });
         });
@@ -175,7 +175,7 @@ func main() {
 		log.Fatal(err)
 	}
 	defer c.Close()
-	resp, err := c.RankList(context.Background(), "ib_hot_all-us", false)
+	resp, err := c.RankList(context.Background(), "hot_all-us", false)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -200,7 +200,7 @@ func main() {
     "lists": [
       {
         "code": "MU",
-        "counter_id": "ST/US/MU",
+        "symbol": "MU.US",
         "name": "Micron Technology",
         "last_done": "698.740",
         "chg": "0.0252",
@@ -241,7 +241,7 @@ func main() {
 | bmp | boolean | false | Whether the response is a market preview (before open) |
 | lists | object[] | false | Leaderboard stock list |
 | ∟ code | string | false | Ticker code (e.g. `MU`) |
-| ∟ counter_id | string | false | Counter ID (e.g. `ST/US/MU`) |
+| ∟ symbol | string | false | Symbol in `CODE.MARKET` format (e.g. `MU.US`) |
 | ∟ name | string | false | Security name |
 | ∟ last_done | string | false | Latest trade price |
 | ∟ chg | string | false | Price change ratio as decimal (e.g. `0.0252` = 2.52%) |

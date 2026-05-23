@@ -1,6 +1,6 @@
 ---
 slug: screener-recommend-strategies
-title: Recommended Screener Strategies
+title: Preset Screener Strategies
 sidebar_position: 1
 language_tabs: false
 toc_footers: []
@@ -10,10 +10,13 @@ highlight_theme: ''
 headingLevel: 2
 ---
 
-Get the list of platform-recommended stock screener strategies, including recent average daily change and constituent stocks.
+Get the list of platform-preset stock screener strategies, including recent average daily change and constituent stocks.
+
+Endpoint: `GET /v1/quote/ai/screener/strategies/recommend`
 
 <CliCommand>
 longbridge screener strategies
+longbridge screener strategies --market HK
 </CliCommand>
 
 <SDKLinks module="screener" klass="ScreenerContext" method="screener_recommend_strategies" />
@@ -23,7 +26,9 @@ longbridge screener strategies
 
 > **SDK method parameters.**
 
-This method takes no parameters.
+| Name | Type | Required | Description |
+| ---- | ---- | -------- | ----------- |
+| market | string | NO | Market filter: `US`, `HK`, `CN`, `SG`. Default: `US` |
 
 ## Request Example
 
@@ -37,7 +42,12 @@ oauth = OAuthBuilder("your-client-id").build(lambda url: print("Visit:", url))
 config = Config.from_oauth(oauth)
 ctx = ScreenerContext(config)
 
+# Default market (US)
 resp = ctx.screener_recommend_strategies()
+print(resp)
+
+# Hong Kong market
+resp = ctx.screener_recommend_strategies(market="HK")
 print(resp)
 ```
 
@@ -53,7 +63,7 @@ async def main() -> None:
     config = Config.from_oauth(oauth)
     ctx = AsyncScreenerContext.create(config)
 
-    resp = await ctx.screener_recommend_strategies()
+    resp = await ctx.screener_recommend_strategies(market="HK")
     print(resp)
 
 if __name__ == "__main__":
@@ -171,7 +181,7 @@ func main() {
 		log.Fatal(err)
 	}
 	defer c.Close()
-	resp, err := c.ScreenerRecommendStrategies(context.Background())
+	resp, err := c.ScreenerRecommendStrategies(context.Background(), "US")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -192,27 +202,9 @@ func main() {
   "code": 0,
   "message": "success",
   "data": {
-    "screeners": [
-      {
-        "id": "1",
-        "name": "High Dividend Blue Chips",
-        "groups": [
-          {
-            "group_name": "Range",
-            "group_type": "range",
-            "indicators": [
-              { "id": -1, "key": "filter_market", "name": "HK", "unit": "", "min": "", "max": "", "value": "HK", "tech_data": [] }
-            ]
-          },
-          {
-            "group_name": "Dividend Indicators",
-            "group_type": "DividendIndex",
-            "indicators": [
-              { "id": 29, "key": "filter_divyld", "name": "Dividend Yield (TTM)", "unit": "%", "min": "4", "max": "", "value": "", "tech_data": [] }
-            ]
-          }
-        ]
-      }
+    "strategys": [
+      { "id": 19, "name": "今日大涨股票", "type": "platform", "market": "US" },
+      { "id": 20, "name": "今年增长冠军", "type": "platform", "market": "US" }
     ]
   }
 }
@@ -233,18 +225,8 @@ func main() {
 
 | Name | Type | Required | Description |
 | ---- | ---- | -------- | ----------- |
-| screeners | object[] | false | Strategy list |
-| ∟ id | string | false | Strategy ID |
+| strategys | object[] | false | Strategy list |
+| ∟ id | integer | false | Strategy ID (pass to `screener_strategy` or `screener_search`) |
 | ∟ name | string | false | Strategy name |
-| ∟ groups | object[] | false | Filter condition groups |
-| ∟ ∟ group_name | string | false | Group name |
-| ∟ ∟ group_type | string | false | Group type (e.g. `range`, `Quotes`, `DividendIndex`) |
-| ∟ ∟ indicators | object[] | false | Indicator conditions in this group |
-| ∟ ∟ ∟ id | integer | false | Indicator ID |
-| ∟ ∟ ∟ key | string | false | Indicator key; usable in `screener_search` |
-| ∟ ∟ ∟ name | string | false | Indicator name |
-| ∟ ∟ ∟ unit | string | false | Indicator unit |
-| ∟ ∟ ∟ min | string | false | Minimum value set by the strategy; empty string means no lower bound |
-| ∟ ∟ ∟ max | string | false | Maximum value set by the strategy; empty string means no upper bound |
-| ∟ ∟ ∟ value | string | false | Fixed value (used for non-range indicators such as market selector) |
-| ∟ ∟ ∟ tech_data | array | false | Technical indicator data array |
+| ∟ type | string | false | `"platform"` for preset strategies |
+| ∟ market | string | false | Target market (e.g. `"US"`, `"HK"`) |

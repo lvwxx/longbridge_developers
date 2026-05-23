@@ -12,6 +12,10 @@ headingLevel: 2
 
 獲取選股器支持的所有指標定義，包含鍵值、名稱、單位和可用範圍，可用於構建自定義篩選條件。
 
+接口：`GET /v1/quote/ai/screener/indicators`
+
+> **SDK 響應：** `data` 字段為分組結構 `{"groups": [{...}]}`。CLI `screener indicators --format json` 會將其展平為扁平數組以方便使用。
+
 <CliCommand>
 longbridge screener indicators
 </CliCommand>
@@ -194,49 +198,17 @@ func main() {
   "data": {
     "groups": [
       {
-        "group_name": "市場",
-        "group_type": "range",
+        "group_name": "公司規模與財務",
         "indicators": [
-          {
-            "id": -1,
-            "key": "filter_market",
-            "name": "市場",
-            "unit": "",
-            "category": 0,
-            "description": "",
-            "default_selected": false,
-            "default_range": [],
-            "value_ranges": [],
-            "places": 0,
-            "sub_indicators": [],
-            "tech_indicators": []
-          }
-        ]
-      },
-      {
-        "group_name": "行情類指標",
-        "group_type": "Quotes",
-        "indicators": [
-          {
-            "id": 1,
-            "key": "filter_marketcap",
-            "name": "市值",
-            "unit": "億",
-            "category": 1,
-            "description": "",
-            "default_selected": true,
-            "default_range": [{"min": "10", "max": "1000"}],
-            "value_ranges": [{"min": "", "max": "10"}, {"min": "10", "max": "100"}],
-            "places": 2,
-            "sub_indicators": [],
-            "tech_indicators": []
-          }
+          { "id": "1", "key": "marketcap", "name": "市值", "unit": "億", "min": null, "max": null }
         ]
       }
     ]
   }
 }
 ```
+
+> 所有 `key` 值已去除 `filter_` 前綴，`id` 字段為字符串類型。
 
 ### Response Status
 
@@ -251,30 +223,16 @@ func main() {
 
 <a id="ScreenerIndicatorsResponse"></a>
 
+SDK 響應 `data` 為分組結構，CLI `--format json` 輸出會將其展平為扁平數組。所有 `key` 值已去除 `filter_` 前綴。
+
 | Name | Type | Required | Description |
 | ---- | ---- | -------- | ----------- |
 | groups | object[] | false | 指標分組 |
 | ∟ group_name | string | false | 分組名稱 |
-| ∟ group_type | string | false | 分組類型（如 `range`、`Quotes`、`DividendIndex`） |
-| ∟ indicators | object[] | false | 該分組下的指標列表 |
-| ∟ ∟ id | integer | false | 指標 ID |
-| ∟ ∟ key | string | false | 指標鍵值，用於構建篩選條件 |
+| ∟ indicators | object[] | false | 該分組下的指標 |
+| ∟ ∟ id | string | false | 指標 ID（字符串類型） |
+| ∟ ∟ key | string | false | 指標鍵值，用於構建篩選條件（不含 `filter_` 前綴） |
 | ∟ ∟ name | string | false | 指標顯示名稱 |
 | ∟ ∟ unit | string | false | 單位（如 `%`、`億`） |
-| ∟ ∟ category | integer | false | 指標分類代碼 |
-| ∟ ∟ description | string | false | 指標描述 |
-| ∟ ∟ default_selected | boolean | false | 是否默認選中 |
-| ∟ ∟ default_range | [RangeItem](#RangeItem)[] | false | 默認篩選範圍 |
-| ∟ ∟ value_ranges | [RangeItem](#RangeItem)[] | false | 指標可選值範圍 |
-| ∟ ∟ places | integer | false | 顯示小數位數 |
-| ∟ ∟ sub_indicators | object[] | false | 子指標定義 |
-| ∟ ∟ tech_indicators | object[] | false | 技術指標定義 |
-
-### RangeItem
-
-<a id="RangeItem"></a>
-
-| Name | Type | Required | Description |
-| ---- | ---- | -------- | ----------- |
-| min | string | false | 範圍下限（空字符串表示無下限） |
-| max | string | false | 範圍上限（空字符串表示無上限） |
+| ∟ ∟ min | string | false | 指標全局下限；null 表示無下限 |
+| ∟ ∟ max | string | false | 指標全局上限；null 表示無上限 |
