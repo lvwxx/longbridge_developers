@@ -7,6 +7,11 @@ sidebar_icon: newspaper
 
 # Release Notes
 
+### [v0.22.2](https://github.com/longbridge/longbridge-terminal/releases/tag/v0.22.2)
+
+- **JSON 时间戳统一为 RFC 3339** — 时序与历史类命令（`kline`、`kline-history`、`trades`、`intraday`、`capital-flow`、`capital-dist`、`market-temp`、`topics`）及账户盈亏流水现输出 ISO 8601 / RFC 3339 日期时间，不再使用原始 Unix 时间戳
+- **`market-temp --history` 默认区间** — 省略 `--start` 时默认取结束日期前 30 天（此前默认为当天），单次 `--history` 即可返回整月数据
+
 ### [v0.22.0](https://github.com/longbridge/longbridge-terminal/releases/tag/v0.22.0)
 
 - **新增 `shareholder --top`** — 前 20 大股东（机构、个人、内部人）多报告期持股对比；`--object-id <id>` 查看单一股东持仓历史及交易明细

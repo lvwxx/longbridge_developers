@@ -7,6 +7,11 @@ sidebar_icon: newspaper
 
 # Release Notes
 
+### [v0.22.2](https://github.com/longbridge/longbridge-terminal/releases/tag/v0.22.2)
+
+- **JSON timestamps now RFC 3339** — time-series and history commands (`kline`, `kline-history`, `trades`, `intraday`, `capital-flow`, `capital-dist`, `market-temp`, `topics`) and account P&L flows now output ISO 8601 / RFC 3339 datetimes instead of raw Unix epochs
+- **`market-temp --history` default range** — omitting `--start` now defaults to 30 days before the end date instead of today, so a single `--history` call returns a full month of data
+
 ### [v0.22.0](https://github.com/longbridge/longbridge-terminal/releases/tag/v0.22.0)
 
 - **New `shareholder --top`** — Top-20 major shareholders (institutions, individuals, insiders) with multi-period comparison; `--object-id <id>` for single shareholder holding history and trade details
