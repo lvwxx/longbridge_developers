@@ -23,7 +23,7 @@ As with Start Conversation, choose blocking / SSE streaming response mode with t
 <table className="http-basic">
 <tbody>
 <tr><td className="http-basic-key">HTTP Method</td><td>POST</td></tr>
-<tr><td className="http-basic-key">HTTP URL</td><td>/v1/babbage/agents/:id/conversations/:chat_uid/messages/:message_id/continue</td></tr>
+<tr><td className="http-basic-key">HTTP URL</td><td>/v1/ai/agents/:id/conversations/:chat_uid/messages/:message_id/continue</td></tr>
 </tbody>
 </table>
 
@@ -53,7 +53,7 @@ The structure of `answers_by_tool_call` is "tool call ID → answers for that in
   <TabItem value="curl" label="cURL (JSON)" default>
 
 ```bash
-curl -X POST "https://openapi.longbridge.com/v1/babbage/agents/123/conversations/ct_9f2c1a5b/messages/43/continue" \
+curl -X POST "https://openapi.longbridge.com/v1/ai/agents/123/conversations/ct_9f2c1a5b/messages/43/continue" \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
@@ -70,7 +70,7 @@ curl -X POST "https://openapi.longbridge.com/v1/babbage/agents/123/conversations
   <TabItem value="curl-sse" label="cURL (SSE)">
 
 ```bash
-curl -N -X POST "https://openapi.longbridge.com/v1/babbage/agents/123/conversations/ct_9f2c1a5b/messages/43/continue" \
+curl -N -X POST "https://openapi.longbridge.com/v1/ai/agents/123/conversations/ct_9f2c1a5b/messages/43/continue" \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -H "Accept: text/event-stream" \

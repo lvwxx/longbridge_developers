@@ -23,7 +23,7 @@ Agent 会结合行情、账户等能力生成回答。当 Agent 需要你补充�
 <table className="http-basic">
 <tbody>
 <tr><td className="http-basic-key">HTTP Method</td><td>POST</td></tr>
-<tr><td className="http-basic-key">HTTP URL</td><td>/v1/babbage/agents/:id/conversations</td></tr>
+<tr><td className="http-basic-key">HTTP URL</td><td>/v1/ai/agents/:id/conversations</td></tr>
 </tbody>
 </table>
 
@@ -47,7 +47,7 @@ Agent 会结合行情、账户等能力生成回答。当 Agent 需要你补充�
 
 ```bash
 # 阻塞式：一次性拿到最终结果
-curl -X POST "https://openapi.longbridge.com/v1/babbage/agents/123/conversations" \
+curl -X POST "https://openapi.longbridge.com/v1/ai/agents/123/conversations" \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
@@ -61,7 +61,7 @@ curl -X POST "https://openapi.longbridge.com/v1/babbage/agents/123/conversations
 
 ```bash
 # 流式：实时接收运行过程与回答
-curl -N -X POST "https://openapi.longbridge.com/v1/babbage/agents/123/conversations" \
+curl -N -X POST "https://openapi.longbridge.com/v1/ai/agents/123/conversations" \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -H "Accept: text/event-stream" \

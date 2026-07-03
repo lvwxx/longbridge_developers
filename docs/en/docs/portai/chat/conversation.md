@@ -23,7 +23,7 @@ Choose the response mode with the `Accept` header: `text/event-stream` streams t
 <table className="http-basic">
 <tbody>
 <tr><td className="http-basic-key">HTTP Method</td><td>POST</td></tr>
-<tr><td className="http-basic-key">HTTP URL</td><td>/v1/babbage/agents/:id/conversations</td></tr>
+<tr><td className="http-basic-key">HTTP URL</td><td>/v1/ai/agents/:id/conversations</td></tr>
 </tbody>
 </table>
 
@@ -47,7 +47,7 @@ Choose the response mode with the `Accept` header: `text/event-stream` streams t
 
 ```bash
 # Blocking: get the final result in one response
-curl -X POST "https://openapi.longbridge.com/v1/babbage/agents/123/conversations" \
+curl -X POST "https://openapi.longbridge.com/v1/ai/agents/123/conversations" \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
@@ -61,7 +61,7 @@ curl -X POST "https://openapi.longbridge.com/v1/babbage/agents/123/conversations
 
 ```bash
 # Streaming: receive run progress and the answer in real time
-curl -N -X POST "https://openapi.longbridge.com/v1/babbage/agents/123/conversations" \
+curl -N -X POST "https://openapi.longbridge.com/v1/ai/agents/123/conversations" \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -H "Accept: text/event-stream" \
