@@ -10,7 +10,7 @@ highlight_theme: ''
 headingLevel: 2
 ---
 
-When [Start Conversation](/docs/portai/chat/conversation) returns `status = interrupted`, the Agent is waiting for more information from you. Send your answers via this endpoint and the paused run resumes from the interrupt point, until it succeeds, gets interrupted again, or fails.
+When [Start Conversation](/docs/ai/chat/conversation) returns `status = interrupted`, the Agent is waiting for more information from you. Send your answers via this endpoint and the paused run resumes from the interrupt point, until it succeeds, gets interrupted again, or fails.
 
 A single round of conversation may be interrupted multiple times: if the run returns `interrupted` again after continuing, call this endpoint again with the new `interrupt`.
 
@@ -88,7 +88,7 @@ curl -N -X POST "https://openapi.longbridge.com/v1/ai/agents/123/conversations/c
 
 ## Response
 
-The response structure is identical to [Start Conversation](/docs/portai/chat/conversation#schemaconversation_response).
+The response structure is identical to [Start Conversation](/docs/ai/chat/conversation#schemaconversation_response).
 
 ### Response Headers
 
@@ -118,7 +118,7 @@ Run succeeded:
 
 | Status | Description        | Schema                                                                        |
 | ------ | ------------------ | ----------------------------------------------------------------------------- |
-| 200    | Success            | [conversation_response](/docs/portai/chat/conversation#schemaconversation_response) |
+| 200    | Success            | [conversation_response](/docs/ai/chat/conversation#schemaconversation_response) |
 | 400    | Invalid parameters | Empty `answers_by_tool_call`, message not interrupted, missing required interrupt answers, or conversation / message ownership mismatch |
 | 500    | Internal error     | None                                                                          |
 

@@ -10,7 +10,7 @@ highlight_theme: ''
 headingLevel: 2
 ---
 
-获取当前账户加入的全部 Workspace 列表。Workspace 是 Agent 的组织单位，先通过本接口找到目标 Workspace，再用 [Workspace 下的 Agent](/zh-CN/docs/portai/workspace/agents) 查询其中可用的 Agent。
+獲取當前賬戶加入的全部 Workspace 列表。Workspace 是 Agent 的組織單位，先通過本接口找到目標 Workspace，再用 [Workspace 下的 Agent](/zh-HK/docs/ai/workspace/agents) 查詢其中可用的 Agent。
 
 <SDKLinks module="agent" klass="AgentContext" method="workspaces" />
 
@@ -53,7 +53,7 @@ curl "https://openapi.longbridge.com/v1/ai/workspaces" \
     "workspaces": [
       {
         "id": "1001",
-        "name": "我的工作空间",
+        "name": "我的工作空間",
         "owner_id": "10086",
         "member_count": 3,
         "created_at": 1742000000,
@@ -69,7 +69,7 @@ curl "https://openapi.longbridge.com/v1/ai/workspaces" \
 | Status | Description | Schema                                            |
 | ------ | ----------- | ------------------------------------------------- |
 | 200    | 返回成功    | [workspaces_response](#schemaworkspaces_response) |
-| 500    | 内部错误    | None                                              |
+| 500    | 內部錯誤    | None                                              |
 
 ## Schemas
 
@@ -79,10 +79,10 @@ curl "https://openapi.longbridge.com/v1/ai/workspaces" \
 
 | Name           | Type     | Required | Description                     |
 | -------------- | -------- | -------- | ------------------------------- |
-| workspaces     | object[] | true     | 当前账户加入的 Workspace 列表   |
+| workspaces     | object[] | true     | 當前賬戶加入的 Workspace 列表   |
 | ∟ id           | string   | true     | Workspace ID                    |
-| ∟ name         | string   | true     | Workspace 名称                  |
+| ∟ name         | string   | true     | Workspace 名稱                  |
 | ∟ owner_id     | string   | false    | 所有者的 member ID              |
-| ∟ member_count | int32    | false    | 成员数量                        |
-| ∟ created_at   | int64    | false    | 创建时间，Unix 时间戳（秒）     |
-| ∟ updated_at   | int64    | false    | 最后更新时间，Unix 时间戳（秒） |
+| ∟ member_count | int32    | false    | 成員數量                        |
+| ∟ created_at   | int64    | false    | 創建時間，Unix 時間戳（秒）     |
+| ∟ updated_at   | int64    | false    | 最後更新時間，Unix 時間戳（秒） |

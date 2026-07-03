@@ -12,7 +12,7 @@ headingLevel: 2
 
 Ask a question to the specified Agent. You can start a brand-new conversation, or pass the `chat_uid` of an existing one to continue asking in the same conversation.
 
-The Agent generates the answer using capabilities such as market data and account access. When the Agent needs more information or confirmation from you, the run is **interrupted** (`status` is `interrupted`) — send your answers via [Continue Conversation](/docs/portai/chat/continue) to resume it.
+The Agent generates the answer using capabilities such as market data and account access. When the Agent needs more information or confirmation from you, the run is **interrupted** (`status` is `interrupted`) — send your answers via [Continue Conversation](/docs/ai/chat/continue) to resume it.
 
 Choose the response mode with the `Accept` header: `text/event-stream` streams the run progress and answer via SSE; any other value returns a blocking response with the aggregated final result.
 
@@ -32,6 +32,10 @@ Choose the response mode with the `Accept` header: `text/event-stream` streams t
 | Name | Type   | Required | Description                                        |
 | ---- | ------ | -------- | -------------------------------------------------- |
 | id   | string | YES      | UID of the target Agent; must be a published Agent |
+
+:::tip How to find an Agent's UID
+Besides querying the [Agents in Workspace](/docs/ai/workspace/agents) endpoint, you can also get it directly from the Longbridge website: open the Agent's chat page — the URL looks like `https://longbridge.com/en/ai/agents/chatbot/chat`, where `chatbot` is the Agent's UID.
+:::
 
 ### Request Body
 

@@ -10,7 +10,7 @@ highlight_theme: ''
 headingLevel: 2
 ---
 
-獲取指定 Workspace 下的 Agent 列表。返回的 `uid` 即 [發起對話](/zh-HK/docs/portai/chat/conversation) 接口路徑中的 Agent 標識；只有 `is_published` 為 `true` 的 Agent 才能發起對話。
+获取指定 Workspace 下的 Agent 列表。返回的 `uid` 即 [发起对话](/zh-CN/docs/ai/chat/conversation) 接口路径中的 Agent 标识；只有 `is_published` 为 `true` 的 Agent 才能发起对话。
 
 <SDKLinks module="agent" klass="AgentContext" method="agents" />
 
@@ -33,9 +33,9 @@ headingLevel: 2
 
 | Name  | Type   | Required | Description                        |
 | ----- | ------ | -------- | ---------------------------------- |
-| page  | int32  | NO       | 頁碼，從 1 開始，默認 1            |
-| limit | int32  | NO       | 每頁數量，默認 20                  |
-| name  | string | NO       | 按 Agent 名稱模糊搜索              |
+| page  | int32  | NO       | 页码，从 1 开始，默认 1            |
+| limit | int32  | NO       | 每页数量，默认 20                  |
+| name  | string | NO       | 按 Agent 名称模糊搜索              |
 
 ### Request Example
 
@@ -68,7 +68,7 @@ curl "https://openapi.longbridge.com/v1/ai/workspaces/1001/agents?page=1&limit=2
       {
         "uid": "ag_7d3f9b2c",
         "name": "美股分析助手",
-        "description": "結合行情與基本面數據，回答美股相關問題",
+        "description": "结合行情与基本面数据，回答美股相关问题",
         "mode": "chat",
         "icon": "https://cdn.longbridge.com/icons/agent.png",
         "is_published": true,
@@ -87,8 +87,8 @@ curl "https://openapi.longbridge.com/v1/ai/workspaces/1001/agents?page=1&limit=2
 | Status | Description | Schema                                    |
 | ------ | ----------- | ----------------------------------------- |
 | 200    | 返回成功    | [agents_response](#schemaagents_response) |
-| 400    | 參數非法    | Workspace 不存在或無權訪問                |
-| 500    | 內部錯誤    | None                                      |
+| 400    | 参数非法    | Workspace 不存在或无权访问                |
+| 500    | 内部错误    | None                                      |
 
 ## Schemas
 
@@ -99,13 +99,13 @@ curl "https://openapi.longbridge.com/v1/ai/workspaces/1001/agents?page=1&limit=2
 | Name           | Type     | Required | Description                                          |
 | -------------- | -------- | -------- | ---------------------------------------------------- |
 | agents         | object[] | true     | Agent 列表                                           |
-| ∟ uid          | string   | true     | Agent UID，用於 [發起對話](/zh-HK/docs/portai/chat/conversation) 的路徑參數 |
-| ∟ name         | string   | true     | Agent 名稱                                           |
+| ∟ uid          | string   | true     | Agent UID，用于 [发起对话](/zh-CN/docs/ai/chat/conversation) 的路径参数 |
+| ∟ name         | string   | true     | Agent 名称                                           |
 | ∟ description  | string   | false    | Agent 描述                                           |
 | ∟ mode         | string   | true     | Agent 模式，如 `chat`                                |
-| ∟ icon         | string   | false    | 圖標 URL                                             |
-| ∟ is_published | boolean  | true     | 是否已發佈，僅已發佈的 Agent 可發起對話              |
-| ∟ published_at | int64    | false    | 發佈時間，Unix 時間戳（秒），未發佈為 0              |
-| ∟ created_at   | int64    | false    | 創建時間，Unix 時間戳（秒）                          |
-| ∟ updated_at   | int64    | false    | 最後更新時間，Unix 時間戳（秒）                      |
-| total          | int32    | true     | 符合條件的 Agent 總數                                |
+| ∟ icon         | string   | false    | 图标 URL                                             |
+| ∟ is_published | boolean  | true     | 是否已发布，仅已发布的 Agent 可发起对话              |
+| ∟ published_at | int64    | false    | 发布时间，Unix 时间戳（秒），未发布为 0              |
+| ∟ created_at   | int64    | false    | 创建时间，Unix 时间戳（秒）                          |
+| ∟ updated_at   | int64    | false    | 最后更新时间，Unix 时间戳（秒）                      |
+| total          | int32    | true     | 符合条件的 Agent 总数                                |

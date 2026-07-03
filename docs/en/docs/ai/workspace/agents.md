@@ -10,7 +10,7 @@ highlight_theme: ''
 headingLevel: 2
 ---
 
-List the Agents in the specified Workspace. The returned `uid` is the Agent identifier used in the [Start Conversation](/docs/portai/chat/conversation) endpoint path; only Agents with `is_published` set to `true` can start conversations.
+List the Agents in the specified Workspace. The returned `uid` is the Agent identifier used in the [Start Conversation](/docs/ai/chat/conversation) endpoint path; only Agents with `is_published` set to `true` can start conversations.
 
 <SDKLinks module="agent" klass="AgentContext" method="agents" />
 
@@ -99,7 +99,7 @@ curl "https://openapi.longbridge.com/v1/ai/workspaces/1001/agents?page=1&limit=2
 | Name           | Type     | Required | Description                                                          |
 | -------------- | -------- | -------- | -------------------------------------------------------------------- |
 | agents         | object[] | true     | Agent list                                                            |
-| ∟ uid          | string   | true     | Agent UID, used as the path parameter of [Start Conversation](/docs/portai/chat/conversation) |
+| ∟ uid          | string   | true     | Agent UID, used as the path parameter of [Start Conversation](/docs/ai/chat/conversation) |
 | ∟ name         | string   | true     | Agent name                                                            |
 | ∟ description  | string   | false    | Agent description                                                     |
 | ∟ mode         | string   | true     | Agent mode, e.g. `chat`                                               |

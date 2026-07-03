@@ -10,7 +10,7 @@ highlight_theme: ''
 headingLevel: 2
 ---
 
-List all Workspaces the current account belongs to. A Workspace is the organizational unit for Agents: find the target Workspace via this endpoint first, then use [Agents in Workspace](/docs/portai/workspace/agents) to list the Agents available in it.
+List all Workspaces the current account belongs to. A Workspace is the organizational unit for Agents: find the target Workspace via this endpoint first, then use [Agents in Workspace](/docs/ai/workspace/agents) to list the Agents available in it.
 
 <SDKLinks module="agent" klass="AgentContext" method="workspaces" />
 
