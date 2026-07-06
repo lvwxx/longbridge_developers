@@ -54,8 +54,6 @@ curl "https://openapi.longbridge.com/v1/ai/workspaces" \
       {
         "id": "1001",
         "name": "我的工作空间",
-        "owner_id": "10086",
-        "member_count": 3,
         "created_at": 1742000000,
         "updated_at": 1742001000
       }
@@ -77,12 +75,10 @@ curl "https://openapi.longbridge.com/v1/ai/workspaces" \
 
 <a id="schemaworkspaces_response"></a>
 
-| Name           | Type     | Required | Description                     |
-| -------------- | -------- | -------- | ------------------------------- |
-| workspaces     | object[] | true     | 当前账户加入的 Workspace 列表   |
-| ∟ id           | string   | true     | Workspace ID                    |
-| ∟ name         | string   | true     | Workspace 名称                  |
-| ∟ owner_id     | string   | false    | 所有者的 member ID              |
-| ∟ member_count | int32    | false    | 成员数量                        |
-| ∟ created_at   | int64    | false    | 创建时间，Unix 时间戳（秒）     |
-| ∟ updated_at   | int64    | false    | 最后更新时间，Unix 时间戳（秒） |
+| Name         | Type     | Required | Description                     |
+| ------------ | -------- | -------- | ------------------------------- |
+| workspaces   | object[] | true     | 当前账户加入的 Workspace 列表   |
+| ∟ id         | string   | true     | Workspace ID                    |
+| ∟ name       | string   | true     | Workspace 名称                  |
+| ∟ created_at | int64    | false    | 创建时间，Unix 时间戳（秒）     |
+| ∟ updated_at | int64    | false    | 最后更新时间，Unix 时间戳（秒） |

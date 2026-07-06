@@ -54,8 +54,6 @@ curl "https://openapi.longbridge.com/v1/ai/workspaces" \
       {
         "id": "1001",
         "name": "My Workspace",
-        "owner_id": "10086",
-        "member_count": 3,
         "created_at": 1742000000,
         "updated_at": 1742001000
       }
@@ -77,12 +75,10 @@ curl "https://openapi.longbridge.com/v1/ai/workspaces" \
 
 <a id="schemaworkspaces_response"></a>
 
-| Name           | Type     | Required | Description                                     |
-| -------------- | -------- | -------- | ----------------------------------------------- |
-| workspaces     | object[] | true     | Workspaces the current account belongs to       |
-| ∟ id           | string   | true     | Workspace ID                                    |
-| ∟ name         | string   | true     | Workspace name                                  |
-| ∟ owner_id     | string   | false    | Member ID of the owner                          |
-| ∟ member_count | int32    | false    | Number of members                               |
-| ∟ created_at   | int64    | false    | Creation time, Unix timestamp in seconds        |
-| ∟ updated_at   | int64    | false    | Last updated time, Unix timestamp in seconds    |
+| Name         | Type     | Required | Description                                     |
+| ------------ | -------- | -------- | ----------------------------------------------- |
+| workspaces   | object[] | true     | Workspaces the current account belongs to       |
+| ∟ id         | string   | true     | Workspace ID                                    |
+| ∟ name       | string   | true     | Workspace name                                  |
+| ∟ created_at | int64    | false    | Creation time, Unix timestamp in seconds        |
+| ∟ updated_at | int64    | false    | Last updated time, Unix timestamp in seconds    |
